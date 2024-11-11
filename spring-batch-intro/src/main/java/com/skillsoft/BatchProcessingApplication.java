@@ -1,5 +1,7 @@
 package com.skillsoft;
 
+import com.skillsoft.batchprocessing.SpringBatchConfig;
+import com.skillsoft.batchprocessing.SpringConfig;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
@@ -9,12 +11,20 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class BatchProcessingApplication {
 
     public static void main(String[] args){
-        ApplicationContext context = new ClassPathXmlApplicationContext("spring-batch.xml");
+
+        //For spring-batch.xml usage without using Annotation
+        //ApplicationContext context = new ClassPathXmlApplicationContext("spring-batch.xml");
+
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.register(SpringConfig.class);
+        context.register(SpringBatchConfig.class);
+        context.refresh();
 
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
         Job job = (Job) context.getBean("CSVtoXML");
